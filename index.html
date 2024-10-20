@@ -1,39 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web BLE Example</title>
+    <title>Web BLE Test</title>
 </head>
 <body>
-    <button id="connect">Connect to BLE Device</button>
-    <p id="status">Status: Not Connected</p>
+    <h1>Web Bluetooth Test</h1>
+    <button id="connect">Connect to Bluetooth Device</button>
 
     <script>
-        const SERVICE_UUID = '12345678-1234-5678-1234-56789abcdef0';
-        const CHARACTERISTIC_UUID = '12345678-1234-5678-1234-56789abcdef1';
-
         document.getElementById('connect').addEventListener('click', async () => {
             try {
-                // Request the Bluetooth device
                 const device = await navigator.bluetooth.requestDevice({
-                    filters: [{ services: [SERVICE_UUID] }]
+                    filters: [{ services: ['battery_service'] }] // Modify this for your device
                 });
-                
-                document.getElementById('status').textContent = 'Connecting...';
-
-                // Connect to the GATT server
-                const server = await device.gatt.connect();
-                const service = await server.getPrimaryService(SERVICE_UUID);
-                const characteristic = await service.getCharacteristic(CHARACTERISTIC_UUID);
-
-                // Read the characteristic value (if needed)
-                const value = await characteristic.readValue();
-                const decoder = new TextDecoder('utf-8');
-                document.getElementById('status').textContent = 'Connected to ' + device.name + ', Value: ' + decoder.decode(value);
+                console.log('Connected to device:', device);
             } catch (error) {
                 console.error('Error:', error);
-                document.getElementById('status').textContent = 'Error: ' + error;
             }
         });
     </script>
