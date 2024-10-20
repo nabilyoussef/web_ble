@@ -3,28 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web BLE Example</title>
+    <title>Web Bluetooth Example</title>
+    <script>
+        let bluetoothDevice;
+        let server;
+        
+        // Function to connect to the BLE server
+        async function connectBLE() {
+            try {
+                // Requesting a device that matches the service UUID
+                bluetoothDevice = await navigator.bluetooth.requestDevice({
+                    filters: [{ services: ['19b10000-e8f2-537e-4f6c-d104768a1214'] }]
+                });
+
+                console.log('Connecting to GATT Server...');
+                server = await bluetoothDevice.gatt.connect();
+                console.log('> Connected to server');
+
+                // Notify user when connected
+                document.getElementById('status').innerText = "Connected to device: " + bluetoothDevice.name;
+
+                // Optionally, interact with characteristics here, if needed
+            } catch (error) {
+                console.log('Connection failed:', error);
+                document.getElementById('status').innerText = "Connection failed";
+            }
+        }
+
+        // Disconnect BLE device
+        function disconnectBLE() {
+            if (bluetoothDevice && bluetoothDevice.gatt.connected) {
+                bluetoothDevice.gatt.disconnect();
+                console.log('> Disconnected');
+                document.getElementById('status').innerText = "Disconnected";
+            }
+        }
+    </script>
 </head>
 <body>
-    <h1>Web BLE Example</h1>
-    <button id="connect">Connect to Bluetooth Device</button>
-    <div id="device-info"></div>
-    
-    <script>
-        document.getElementById('connect').addEventListener('click', async () => {
-            try {
-                const device = await navigator.bluetooth.requestDevice({
-                    filters: [{ services: ['battery_service'] }]
-                });
-                const server = await device.gatt.connect();
-                const service = await server.getPrimaryService('battery_service');
-                const characteristic = await service.getCharacteristic('battery_level');
-                const value = await characteristic.readValue();
-                document.getElementById('device-info').textContent = `Battery Level: ${value.getUint8(0)}%`;
-            } catch (error) {
-                console.error(error);
-            }
-        });
-    </script>
+    <h1>Web Bluetooth Connection</h1>
+    <button onclick="connectBLE()">Connect to BLE Device</button>
+    <button onclick="disconnectBLE()">Disconnect</button>
+    <p id="status">Status: Not Connected</p>
 </body>
 </html>
