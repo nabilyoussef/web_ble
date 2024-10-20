@@ -1,21 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Web BLE Test</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web BLE Example</title>
 </head>
 <body>
-    <h1>Web Bluetooth Test</h1>
+    <h1>Web BLE Example</h1>
     <button id="connect">Connect to Bluetooth Device</button>
-
+    <div id="device-info"></div>
+    
     <script>
         document.getElementById('connect').addEventListener('click', async () => {
             try {
                 const device = await navigator.bluetooth.requestDevice({
-                    filters: [{ services: ['battery_service'] }] // Modify this for your device
+                    filters: [{ services: ['battery_service'] }]
                 });
-                console.log('Connected to device:', device);
+                const server = await device.gatt.connect();
+                const service = await server.getPrimaryService('battery_service');
+                const characteristic = await service.getCharacteristic('battery_level');
+                const value = await characteristic.readValue();
+                document.getElementById('device-info').textContent = `Battery Level: ${value.getUint8(0)}%`;
             } catch (error) {
-                console.error('Error:', error);
+                console.error(error);
             }
         });
     </script>
