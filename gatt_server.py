@@ -264,7 +264,6 @@ class SendLetterCharacteristic(Characteristic):
                          out_signature='ay')
     def ReadValue(self, options):
         print('SendLetterCharacteristic ReadValue called')
-        print(self.value)
         return dbus.ByteArray(self.value)
 
     @dbus.service.method(GATT_CHRC_IFACE,
@@ -272,6 +271,7 @@ class SendLetterCharacteristic(Characteristic):
     def WriteValue(self, value, options):
         print('SendLetterCharacteristic WriteValue called')
         self.value = value
+        print(self.value)
 
 class ReceiveLetterCharacteristic(Characteristic):
     RECEIVE_LETTER_UUID = '12345678-1234-5678-1234-56789abcdef2'
