@@ -271,7 +271,8 @@ class SendLetterCharacteristic(Characteristic):
     def WriteValue(self, value, options):
         print('SendLetterCharacteristic WriteValue called')
         self.value = value
-        print(self.value)
+        decoded_value = bytes(value).decode('utf-8')
+        print(decoded_value)
 
 class ReceiveLetterCharacteristic(Characteristic):
     RECEIVE_LETTER_UUID = '12345678-1234-5678-1234-56789abcdef2'
@@ -293,6 +294,8 @@ class ReceiveLetterCharacteristic(Characteristic):
     def WriteValue(self, value, options):
         print('ReceiveLetterCharacteristic WriteValue called')
         self.value = value
+        decoded_value = bytes(value).decode('utf-8')
+        print(decoded_value)
 
 class HeartRateService(Service):
     """
